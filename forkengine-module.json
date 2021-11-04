@@ -1,0 +1,6 @@
+{
+    "version": "1.0",
+    "dependencies": {
+        "https://github.com/endrealm/forkengine-core": "1.0"
+    }
+}

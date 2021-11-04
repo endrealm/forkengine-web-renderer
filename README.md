@@ -1,2 +1,2 @@
-# forkengine-shared-webgl
-This module allows for multiple Scene Managers to use the same WebGLInstance
+# forkengine-web-renderer
+This module renders SceneManager instances into a react component
