@@ -1,5 +1,5 @@
 {
-  "name": "forkengine-shared-webgl",
+  "name": "forkengine-web-renderer",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/endrealm/forkengine-web-renderer",
@@ -10,6 +10,7 @@
     "@types/react-dom": "^17.0.11",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "sass": "^1.43.4",
     "three": "^0.130.1"
   },
   "devDependencies": {
