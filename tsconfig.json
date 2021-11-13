@@ -7,8 +7,11 @@
     "sourceMap": true,
     "composite": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../",
     "jsx": "react"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{
+    "path": "../core"
+  }]
 }
