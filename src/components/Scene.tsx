@@ -3,7 +3,9 @@ import React, {useRef} from "react";
 import {useContext, useEffect} from "react";
 import {RendererContext} from "../renderer/Renderer";
 
-export function Scene(props: {sceneManager: SceneManager}) {
+import "../styles/SceneView.scss"
+
+export function SceneView(props: {sceneManager: SceneManager}) {
     const context = useContext(RendererContext)
     const elementRef = useRef<HTMLDivElement>(null)
 
@@ -17,5 +19,5 @@ export function Scene(props: {sceneManager: SceneManager}) {
         }
     }, [context, props.sceneManager, elementRef])
 
-    return <div ref={elementRef} />
+    return <div ref={elementRef} className={"scene-view"}/>
 }

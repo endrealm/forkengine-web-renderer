@@ -34,6 +34,8 @@ export class ForkengineWebRenderer {
         })
         this.webGLRenderer.setClearColor( 0xffffff, 1 );
         this.webGLRenderer.setPixelRatio( window.devicePixelRatio );
+
+        this.step()
     }
 
 
@@ -77,7 +79,6 @@ export class ForkengineWebRenderer {
                 rect.right < 0 || rect.left > this.webGLRenderer.domElement.clientWidth ) {
 
                 return; // it's off screen
-
             }
 
             // set the viewport
@@ -93,7 +94,7 @@ export class ForkengineWebRenderer {
         } );
     }
 
-    private step() {
+    private step = () =>  {
         this.render()
         requestAnimationFrame(this.step)
     }
