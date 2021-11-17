@@ -30,7 +30,8 @@ export class ForkengineWebRenderer {
 
         this.webGLRenderer = new WebGLRenderer({
             canvas: this.canvas.current,
-            antialias: true
+            antialias: true,
+            alpha: true
         })
         this.webGLRenderer.setClearColor( 0xffffff, 1 );
         this.webGLRenderer.setPixelRatio( window.devicePixelRatio );
@@ -59,9 +60,10 @@ export class ForkengineWebRenderer {
 
         this.updateSize();
 
+
         this.canvas.current.style.transform = `translateY(${window.scrollY}px)`;
 
-        this.webGLRenderer.setClearColor( 0xffffff );
+        this.webGLRenderer.setClearColor( 0xffffff, 0.0);
         this.webGLRenderer.setScissorTest( false );
         this.webGLRenderer.clear();
 
