@@ -73,6 +73,9 @@ export class ForkengineWebRenderer {
         this.scenes.forEach(item => {
             if(!item.element.current) return;
 
+            const camera = item.scene.getCamera()
+            if(!camera) return;
+
             // get its position relative to the page's viewport
             const rect = item.element.current.getBoundingClientRect();
 
@@ -92,7 +95,7 @@ export class ForkengineWebRenderer {
             this.webGLRenderer.setViewport( left, bottom, width, height );
             this.webGLRenderer.setScissor( left, bottom, width, height );
 
-            this.webGLRenderer.render( item.scene.getActiveScene(), item.scene.getCamera() );
+            this.webGLRenderer.render( item.scene.getActiveScene(), camera );
         } );
     }
 
