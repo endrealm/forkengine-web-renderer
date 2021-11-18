@@ -1,5 +1,5 @@
-import { DimensionsType } from "modules/core/src/Config";
-import { SceneManager } from "modules/core/src/SceneManager";
+import { DimensionsType } from "forkengine-core/src/Config";
+import { SceneManager } from "forkengine-core/src/SceneManager";
 import React, {useRef} from "react";
 import {useContext, useEffect} from "react";
 import { BehaviorSubject, Observable } from "rx";
