@@ -93,7 +93,7 @@ export class ForkengineWebRenderer {
             if(mouseHandler) {
                 // @ts-ignore
                 if(item.element.current["mouseover"]) {
-                    this.renderMouseHandler(mouseHandler, camera, getMousePositionRelativeElement(item.element)!)
+                    this.renderMouseHandler(mouseHandler, getMousePositionRelativeElement(item.element)!)
                 } else {
                     mouseHandler.clear()
                 }
@@ -128,8 +128,8 @@ export class ForkengineWebRenderer {
 
 
 
-    private renderMouseHandler(mouseHandler: MouseEventHandler, camera: Camera, mousePosition: {x: number, y: number}) {
-        mouseHandler.render(this.webGLRenderer, camera, mousePosition)
+    private renderMouseHandler(mouseHandler: MouseEventHandler, mousePosition: {x: number, y: number}) {
+        mouseHandler.render(this.webGLRenderer, mousePosition)
     }
 
 }
