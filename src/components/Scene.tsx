@@ -9,6 +9,7 @@ import useResizeAware from 'react-resize-aware';
 
 
 import "../styles/SceneView.scss"
+import {getMousePosition} from "../input/Mouse";
 
 export function SceneView(props: {sceneManager: SceneManager}) {
     const context = useContext(RendererContext)
@@ -34,7 +35,39 @@ export function SceneView(props: {sceneManager: SceneManager}) {
         dimensions.onNext({width: sizes.width? sizes.width : 1, height: sizes.height? sizes.height: 1})
     }, [sizes.width, sizes.height, dimensions])
 
-    return <div ref={elementRef} className={"scene-view"}>
+    return <div ref={elementRef}
+                className={"scene-view"}
+                onMouseOver={(event) => setOnMouseOver(true, elementRef, event)}
+                onMouseOut={(event) => setOnMouseOver(false, elementRef,event)}
+                onMouseMove={() => onMouseMove(elementRef, props.sceneManager)}>
         {resizeListener}
     </div>
+}
+
+
+function setOnMouseOver(isMouseOver: boolean, ref: React.RefObject<HTMLDivElement>, event: React.MouseEvent<HTMLDivElement>) {
+    if(ref.current) {
+        // @ts-ignore
+        ref.current["mouseover"] = isMouseOver
+    }
+}
+
+function onMouseMove(element: React.RefObject<HTMLDivElement>, scene: SceneManager) {
+    const mouseHandler = scene.getMouseEventHandler()
+    if(!mouseHandler) return
+
+    if(!element.current) return
+
+    console.log(mouseHandler.pickIdAt(getMousePositionRelativeElement(element)!))
+}
+
+
+export function getMousePositionRelativeElement(element: React.RefObject<HTMLDivElement>): {x: number, y: number} | null {
+    if(!element.current) return null
+
+    const rect = element.current.getBoundingClientRect();
+    const mousePosition = getMousePosition()
+    mousePosition.x -= rect.left
+    mousePosition.y -= rect.top
+    return mousePosition
 }

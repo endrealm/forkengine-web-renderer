@@ -1,6 +1,9 @@
 import React from "react";
-import {WebGLRenderer} from "three";
+import {Camera, PerspectiveCamera, WebGLRenderer} from "three";
 import {SceneManager} from "forkengine-core/src/SceneManager"
+import {getMousePosition} from "../input/Mouse";
+import { MouseEventHandler } from "forkengine-core/src/MouseEventHandler";
+import {getMousePositionRelativeElement} from "../components/Scene";
 
 
 export type RendererContextType = {
@@ -86,6 +89,16 @@ export class ForkengineWebRenderer {
                 return; // it's off screen
             }
 
+            const mouseHandler = item.scene.getMouseEventHandler()
+            if(mouseHandler) {
+                // @ts-ignore
+                if(item.element.current["mouseover"]) {
+                    this.renderMouseHandler(mouseHandler, camera, getMousePositionRelativeElement(item.element)!)
+                } else {
+                    mouseHandler.clear()
+                }
+            }
+
             // set the viewport
             const width = rect.right - rect.left;
             const height = rect.bottom - rect.top;
@@ -111,6 +124,12 @@ export class ForkengineWebRenderer {
 
     removeScene(scene: SceneManager) {
         this.scenes = this.scenes.filter(item => item.scene !== scene)
+    }
+
+
+
+    private renderMouseHandler(mouseHandler: MouseEventHandler, camera: Camera, mousePosition: {x: number, y: number}) {
+        mouseHandler.render(this.webGLRenderer, camera, mousePosition)
     }
 
 }
