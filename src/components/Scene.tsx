@@ -2,7 +2,7 @@ import { DimensionsType } from "forkengine-core/src/Config";
 import { SceneManager } from "forkengine-core/src/SceneManager";
 import React, {useRef} from "react";
 import {useContext, useEffect} from "react";
-import { BehaviorSubject, Observable } from "rx";
+import { BehaviorSubject, Observable, Subject } from "rx";
 import {RendererContext} from "../renderer/Renderer";
 import useResizeAware from 'react-resize-aware';
 
@@ -20,17 +20,19 @@ export function SceneView(props: {sceneManager: SceneManager}) {
     const [resizeListener, sizes] =  useResizeAware()
 
     const dimensions = new BehaviorSubject<DimensionsType>({width: sizes.width? sizes.width : 1, height: sizes.height? sizes.height: 1})
+    const clicks = new Subject<{ x:number, y:number }>()
 
     useEffect(() => {
         if(!elementRef.current) return;
 
         props.sceneManager.getConfig().setDimensions(dimensions)
+        props.sceneManager.getConfig().setClicks(clicks)
 
         context.renderer.addScene(props.sceneManager, elementRef)
         return () => {
             context.renderer.removeScene(props.sceneManager)
         }
-    }, [context, props.sceneManager, elementRef, dimensions])
+    }, [context, props.sceneManager, elementRef, dimensions, clicks])
     useEffect(() => {
         dimensions.onNext({width: sizes.width? sizes.width : 1, height: sizes.height? sizes.height: 1})
     }, [sizes.width, sizes.height, dimensions])
@@ -38,11 +40,16 @@ export function SceneView(props: {sceneManager: SceneManager}) {
     return <div ref={elementRef}
                 className={"scene-view"}
                 onMouseOver={(event) => setOnMouseOver(true, elementRef, event)}
-                onMouseOut={(event) => setOnMouseOver(false, elementRef,event)}>
+                onMouseOut={(event) => setOnMouseOver(false, elementRef,event)}
+                onClick={() => onClick(elementRef, clicks)}>
         {resizeListener}
     </div>
 }
 
+
+function onClick(ref: React.RefObject<HTMLDivElement>, clicks: Subject<{ x:number, y:number }>) {
+    clicks.onNext(getMousePositionRelativeElement(ref)!)
+}
 
 function setOnMouseOver(isMouseOver: boolean, ref: React.RefObject<HTMLDivElement>, event: React.MouseEvent<HTMLDivElement>) {
     if(ref.current) {
