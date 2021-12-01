@@ -38,8 +38,7 @@ export function SceneView(props: {sceneManager: SceneManager}) {
     return <div ref={elementRef}
                 className={"scene-view"}
                 onMouseOver={(event) => setOnMouseOver(true, elementRef, event)}
-                onMouseOut={(event) => setOnMouseOver(false, elementRef,event)}
-                onMouseMove={() => onMouseMove(elementRef, props.sceneManager)}>
+                onMouseOut={(event) => setOnMouseOver(false, elementRef,event)}>
         {resizeListener}
     </div>
 }
@@ -51,16 +50,6 @@ function setOnMouseOver(isMouseOver: boolean, ref: React.RefObject<HTMLDivElemen
         ref.current["mouseover"] = isMouseOver
     }
 }
-
-function onMouseMove(element: React.RefObject<HTMLDivElement>, scene: SceneManager) {
-    const mouseHandler = scene.getMouseEventHandler()
-    if(!mouseHandler) return
-
-    if(!element.current) return
-
-    console.log(mouseHandler.pickIdAt(getMousePositionRelativeElement(element)!))
-}
-
 
 export function getMousePositionRelativeElement(element: React.RefObject<HTMLDivElement>): {x: number, y: number} | null {
     if(!element.current) return null

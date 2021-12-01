@@ -130,6 +130,7 @@ export class ForkengineWebRenderer {
 
     private renderMouseHandler(mouseHandler: MouseEventHandler, mousePosition: {x: number, y: number}) {
         mouseHandler.render(this.webGLRenderer, mousePosition)
+        mouseHandler.updateHoverEvents(mousePosition)
     }
 
 }
