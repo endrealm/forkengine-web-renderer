@@ -20,50 +20,23 @@ export function SceneView(props: {sceneManager: SceneManager}) {
     const [resizeListener, sizes] =  useResizeAware()
 
     const dimensions = new BehaviorSubject<DimensionsType>({width: sizes.width? sizes.width : 1, height: sizes.height? sizes.height: 1})
-    const clicks = new Subject<{ x:number, y:number }>()
 
     useEffect(() => {
         if(!elementRef.current) return;
 
         props.sceneManager.getConfig().setDimensions(dimensions)
-        props.sceneManager.getConfig().setClicks(clicks)
 
         context.renderer.addScene(props.sceneManager, elementRef)
         return () => {
             context.renderer.removeScene(props.sceneManager)
         }
-    }, [context, props.sceneManager, elementRef, dimensions, clicks])
+    }, [context, props.sceneManager, elementRef, dimensions])
     useEffect(() => {
         dimensions.onNext({width: sizes.width? sizes.width : 1, height: sizes.height? sizes.height: 1})
     }, [sizes.width, sizes.height, dimensions])
 
     return <div ref={elementRef}
-                className={"scene-view"}
-                onMouseOver={(event) => setOnMouseOver(true, elementRef, event)}
-                onMouseOut={(event) => setOnMouseOver(false, elementRef,event)}
-                onClick={() => onClick(elementRef, clicks)}>
+                className={"scene-view"}>
         {resizeListener}
     </div>
-}
-
-
-function onClick(ref: React.RefObject<HTMLDivElement>, clicks: Subject<{ x:number, y:number }>) {
-    clicks.onNext(getMousePositionRelativeElement(ref)!)
-}
-
-function setOnMouseOver(isMouseOver: boolean, ref: React.RefObject<HTMLDivElement>, event: React.MouseEvent<HTMLDivElement>) {
-    if(ref.current) {
-        // @ts-ignore
-        ref.current["mouseover"] = isMouseOver
-    }
-}
-
-export function getMousePositionRelativeElement(element: React.RefObject<HTMLDivElement>): {x: number, y: number} | null {
-    if(!element.current) return null
-
-    const rect = element.current.getBoundingClientRect();
-    const mousePosition = getMousePosition()
-    mousePosition.x -= rect.left
-    mousePosition.y -= rect.top
-    return mousePosition
 }

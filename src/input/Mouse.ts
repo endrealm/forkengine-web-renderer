@@ -10,7 +10,7 @@ function handleMouseMove(event: MouseEvent) {
     currentPosition.y = event.y;
 }
 
-document.onmousemove = handleMouseMove
+document.addEventListener("mousemove", handleMouseMove)
 
 
 
