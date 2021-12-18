@@ -31,7 +31,7 @@ export function SceneView(props: {sceneManager: SceneManager}) {
         const io = props.sceneManager.getIOAdapter();
         io.setDimensions(dimensions)
         io.setMousePosition(mousePosition)
-        io.setClick(click)
+        io.click = click;
 
         context.renderer.addScene(props.sceneManager, elementRef)
         return () => {
