@@ -1,3 +1,5 @@
+import React from "react";
+
 type Position = {
     x: number,
     y: number
@@ -16,4 +18,11 @@ document.addEventListener("mousemove", handleMouseMove)
 
 export function getMousePosition() {
     return {x: currentPosition.x, y: currentPosition.y}
+}
+
+
+export function handleRightClickEvent(event: React.MouseEvent<HTMLDivElement>, callback: (event: React.MouseEvent<HTMLDivElement>) => void): boolean {
+    event.preventDefault();
+    callback(event);
+    return false;
 }

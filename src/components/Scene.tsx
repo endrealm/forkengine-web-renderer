@@ -1,11 +1,11 @@
-import { DimensionsType } from "forkengine-core/src/IOAdapter";
+import {ClickEvent, DimensionsType } from "forkengine-core/src/IOAdapter";
 import { SceneManager } from "forkengine-core/src/SceneManager";
 import React, {ElementRef, RefObject, useRef} from "react";
 import {useContext, useEffect} from "react";
 import { BehaviorSubject, Observable, Subject } from "rx";
 import {RendererContext} from "../renderer/Renderer";
 import useResizeAware from 'react-resize-aware';
-import {getMousePosition} from "../input/Mouse";
+import {getMousePosition, handleRightClickEvent} from "../input/Mouse";
 import { Vector2D } from "forkengine-core/src/util/Vector";
 
 
@@ -23,7 +23,7 @@ export function SceneView(props: {sceneManager: SceneManager}) {
 
     const dimensions = new BehaviorSubject<DimensionsType>({width: sizes.width? sizes.width : 1, height: sizes.height? sizes.height: 1})
     const mousePosition = new BehaviorSubject<Vector2D | null>(null)
-    const click = new Subject<Vector2D>()
+    const click = new Subject<ClickEvent>()
 
     useEffect(() => {
         if(!elementRef.current) return;
@@ -32,6 +32,11 @@ export function SceneView(props: {sceneManager: SceneManager}) {
         io.setDimensions(dimensions)
         io.setMousePosition(mousePosition)
         io.click = click;
+        io.setCursorType = (type) => {
+            if(!elementRef.current) return;
+
+            elementRef.current.style.cursor = type;
+        }
 
         context.renderer.addScene(props.sceneManager, elementRef)
         return () => {
@@ -46,7 +51,8 @@ export function SceneView(props: {sceneManager: SceneManager}) {
                 className={"scene-view"}
                 onMouseMove={() => onMouseMove(elementRef, mousePosition)}
                 onMouseOut={() => onMouseOut(mousePosition)}
-                onClick={(event) => onClick(event, elementRef, click)}>
+                onClick={(event) => onClick(event, elementRef, click, "LEFT")}
+                onContextMenu={(event) => handleRightClickEvent(event, (event) => onClick(event, elementRef, click, "RIGHT"))}>
         {resizeListener}
     </div>
 }
@@ -60,7 +66,7 @@ function onMouseMove(elementRef: RefObject<HTMLDivElement>, mousePosition: Behav
     mousePosition.onNext(getPositionRelativeToElement(new Vector2D(mousePosRaw.x, mousePosRaw.y), elementRef, true));
 }
 
-function onClick(event: React.MouseEvent<HTMLDivElement>, elementRef: RefObject<HTMLDivElement>, click: Subject<Vector2D>) {
+function onClick(event: React.MouseEvent<HTMLDivElement>, elementRef: RefObject<HTMLDivElement>, click: Subject<ClickEvent>, type: "LEFT" | "RIGHT" | "TOUCH") {
     if(!elementRef.current) return;
 
     const clickPos = getPositionRelativeToElement(new Vector2D(event.pageX, event.pageY), elementRef, true);
@@ -68,7 +74,11 @@ function onClick(event: React.MouseEvent<HTMLDivElement>, elementRef: RefObject<
     // WTF???
     if(!clickPos) return;
 
-    click.onNext(clickPos)
+    click.onNext({
+        x: clickPos.getX,
+        y: clickPos.getY,
+        type
+    })
 }
 
 function onMouseOut(mousePosition: BehaviorSubject<Vector2D | null>) {
